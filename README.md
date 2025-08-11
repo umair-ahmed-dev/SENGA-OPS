@@ -87,7 +87,7 @@ cd SENGA-OPS/src
 ```
 
 Which ```<target>``` can have different options which explained in previouse section.
-> 💡 You might need to redo the make command or if it is neccessary modofigy the flags to build it completely.
+> 💡 NB: You might need to redo the make command or if it is neccessary modofigy the flags to build it completely.
 ---
 
 ## 🚀 Running the Simulation
