@@ -8,7 +8,6 @@ It uses the following repository for OPS which is already included in the code:
 
 ---
 
-
 ## 📦 Prerequisites
 
 Make sure the following dependencies are available:
