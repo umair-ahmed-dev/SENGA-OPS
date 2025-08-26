@@ -5,7 +5,6 @@ SUBROUTINE output
     use OPS_CONSTANTS
 
     use, intrinsic :: ISO_C_BINDING
-
     use com_senga
     use com_ops_senga
 
@@ -308,28 +307,26 @@ SUBROUTINE output
             END IF
 
 !           UNFORMATTED DUMP OUTPUT
-            OPEN(UNIT=ncdmpo, FILE=fndmpo(idflag), STATUS='OLD', FORM='UNFORMATTED')
-
             IF (ops_is_root() == 1) THEN
-                WRITE(*,*) "Writing run information to file(unformatted): ", trim(fndmpo(idflag)), "  idflag: ", idflag
-            END IF
-
+            OPEN(UNIT=ncdmpo, FILE=fndmpo(idflag), STATUS='OLD', FORM='UNFORMATTED')
+            WRITE(*,*) "Writing run information to file(unformatted): ", trim(fndmpo(idflag)), "  idflag: ", idflag
             REWIND(ncdmpo)
             WRITE(ncdmpo)nxglbl,nyglbl,nzglbl,nspec,&
                          etime,tstep,errold,errldr
             CLOSE(ncdmpo)
-        ELSE
-!           FORMATTED DUMP OUTPUT
-            OPEN(UNIT=ncdmpo,FILE=fndmpo(idflag),STATUS='OLD', FORM='FORMATTED')
-
-            IF (ops_is_root() == 1) THEN
-                WRITE(*,*) "Writing run information to file(formatted): ", trim(fndmpo(idflag)), "  idflag: ", idflag
             END IF
 
+        ELSE
+!           FORMATTED DUMP OUTPUT
+            IF (ops_is_root() == 1) THEN
+            OPEN(UNIT=ncdmpo,FILE=fndmpo(idflag),STATUS='OLD', FORM='FORMATTED')
+            WRITE(*,*) "Writing run information to file(formatted): ", trim(fndmpo(idflag)), "  idflag: ", idflag
             REWIND(ncdmpo)
             WRITE(ncdmpo,*)nxglbl,nyglbl,nzglbl,nspec
             WRITE(ncdmpo,*)etime,tstep,errold,errldr
             CLOSE(ncdmpo)
+            END IF
+
         END IF
 
 !       REPORT THE DUMP
