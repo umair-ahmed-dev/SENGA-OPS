@@ -1781,6 +1781,7 @@ SUBROUTINE ops_data_init()
 
 #ifdef OPS_WITH_CUDAFOR
 
+
     ncofmx_opsconstant = ncofmx
     ntinmx_opsconstant = ntinmx
     nspcmx_opsconstant = nspcmx
@@ -1802,6 +1803,7 @@ SUBROUTINE ops_data_init()
     ncfrmx_opsconstant = ncfrmx
 
 #endif
+
 
     call ops_decl_const("ncofmx", 1, "integer(kind=4)", ncofmx)
     call ops_decl_const("ntinmx", 1, "integer(kind=4)", ntinmx)
