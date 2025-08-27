@@ -29,7 +29,7 @@ MODULE com_senga
     integer(kind=4), parameter :: nszmax=nxsize
 
 !   SIZE OF HALO
-    integer(kind=4), parameter :: nhalox=5,nhaloy=5,nhaloz=5
+    integer(kind=4), parameter :: nhalox=5,nhaloy=0,nhaloz=0
 
 !   SIZE OF PARALLEL TRANSFER ARRAY
 !   NPARAY MUST BE >= MAX(NHALOX,NHALOY,NHALOZ)
