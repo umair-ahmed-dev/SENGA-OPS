@@ -947,22 +947,26 @@ SUBROUTINE indata
 !   -------------------------------
     INQUIRE(FILE=fndmpo(1),EXIST=fxdump)
     IF(.NOT.fxdump) THEN
+        IF (ops_is_root() == 1) THEN
         IF(ndofmt == 0) THEN
             OPEN(UNIT=ncdmpo,FILE=fndmpo(1),STATUS='REPLACE',FORM='UNFORMATTED')
         ELSE
             OPEN(UNIT=ncdmpo,FILE=fndmpo(1),STATUS='REPLACE',FORM='FORMATTED')
         END IF
         CLOSE(ncdmpo)
+        END IF
     END IF
 
     INQUIRE(FILE=fndmpo(2),EXIST=fxdump)
     IF(.NOT.fxdump) THEN
+        IF (ops_is_root() == 1) THEN
         IF(ndofmt == 0) THEN
             OPEN(UNIT=ncdmpo,FILE=fndmpo(2),STATUS='REPLACE',FORM='UNFORMATTED')
         ELSE
             OPEN(UNIT=ncdmpo,FILE=fndmpo(2),STATUS='REPLACE',FORM='FORMATTED')
         END IF
         CLOSE(ncdmpo)
+        END IF
     END IF
 
 !   ==========================================================================
@@ -1278,14 +1282,15 @@ SUBROUTINE indata
         IF(ndifmt == 0) THEN
 
 !           UNFORMATTED DUMP INPUT
+            IF (ops_is_root() == 1) THEN
+
             OPEN(UNIT=ncdmpi,FILE=fndmpo(idflag),STATUS='OLD', FORM='UNFORMATTED')
 
-            IF (ops_is_root() == 1) THEN
                 WRITE(*,*) "Reading previous run information from file(unformatted): ", trim(fndmpo(idflag)), " idflag: ", idflag
-            END IF
 
             READ(ncdmpi)nxdmax,nydmax,nzdmax,ndspec,&
                         etime,tstep,errold,errldr
+
 
 !           SIZE ERROR CHECK
             IF(nxdmax /= nxglbl) WRITE(6,*)'Dump input size error: x'
@@ -1294,14 +1299,16 @@ SUBROUTINE indata
             IF(ndspec /= nspec)  WRITE(6,*)'Dump input size error: species'
 
             CLOSE(ncdmpi)
+            END IF
+
         ELSE
 
 !           FORMATTED DUMP INPUT
+            IF (ops_is_root() == 1) THEN
+
             OPEN(UNIT=ncdmpi,FILE=fndmpo(idflag),STATUS='OLD',FORM='FORMATTED')
 
-            IF (ops_is_root() == 1) THEN
                 WRITE(*,*) "Reading previous run information from file(formatted): ", trim(fndmpo(idflag)), " idflag: ", idflag
-            END IF
 
             READ(ncdmpi,*)nxdmax,nydmax,nzdmax,ndspec
 
@@ -1314,6 +1321,7 @@ SUBROUTINE indata
             READ(ncdmpi,*)etime,tstep,errold,errldr
 
             CLOSE(ncdmpi)
+            END IF
 
         END IF
 

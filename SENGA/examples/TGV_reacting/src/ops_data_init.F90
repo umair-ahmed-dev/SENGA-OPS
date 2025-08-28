@@ -247,6 +247,21 @@ SUBROUTINE ops_data_init()
     call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d2prun, "real(kind=8)", "PRN2")
     call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d2trun, "real(kind=8)", "TRN2")
 
+!   TGV Postprocessing data
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_psi, "real(kind=8)", "PSI")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_utgv, "real(kind=8)", "UTGV")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_vtgv, "real(kind=8)", "VTGV")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_wtgv, "real(kind=8)", "WTGV")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_dutgvdx, "real(kind=8)", "DUTX")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_dvtgvdx, "real(kind=8)", "DVTX")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_dwtgvdx, "real(kind=8)", "DWTX")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_dutgvdy, "real(kind=8)", "DUTY")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_dvtgvdy, "real(kind=8)", "DVTY")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_dwtgvdy, "real(kind=8)", "DWTY")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_dutgvdz, "real(kind=8)", "DUTZ")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_dvtgvdz, "real(kind=8)", "DVTZ")
+    call ops_decl_dat(senga_grid, 1, d_size, d_base, d_m, d_p, temp_real_null, d_dwtgvdz, "real(kind=8)", "DWTZ")
+
 !---------------------------------------MULTI-DIM DAT--------------------------------------------------------
 
     d_size = [nxglbl, nyglbl, nzglbl]
@@ -810,16 +825,10 @@ SUBROUTINE ops_data_init()
         END IF
     END IF
 
+!   For testing on GPU - reading TGV species from file generated using CPU version
     IF(inflam == 1) THEN
 
-        fname = 'input/flame_init'//pnxhdf
-
-        call ops_decl_dat_hdf5(d_drun_dump, senga_grid, 1, "real(kind=8)", "DRUN", trim(fname), status)
-        call ops_decl_dat_hdf5(d_urun_dump, senga_grid, 1, "real(kind=8)", "URUN", trim(fname), status)
-        call ops_decl_dat_hdf5(d_vrun_dump, senga_grid, 1, "real(kind=8)", "VRUN", trim(fname), status)
-        call ops_decl_dat_hdf5(d_wrun_dump, senga_grid, 1, "real(kind=8)", "WRUN", trim(fname), status)
-        call ops_decl_dat_hdf5(d_trun_dump, senga_grid, 1, "real(kind=8)", "TRUN", trim(fname), status)
-
+        fname = 'TGV_species_flamin_cpu'//pnxhdf
         DO ispec = 1,nspcmx
             WRITE(buf,"(A4,I2.2)") "YRUN",ispec
              call ops_decl_dat_hdf5(d_yrun_dump(ispec), senga_grid, 1, "real(kind=8)", trim(buf), trim(fname), status)
@@ -846,6 +855,7 @@ SUBROUTINE ops_data_init()
     call ops_decl_reduction_handle(8, h_wvart, "real(kind=8)", "wvart")
     call ops_decl_reduction_handle(8, h_umean, "real(kind=8)", "umean")
     call ops_decl_reduction_handle(8, h_denom, "real(kind=8)", "denom")
+    call ops_decl_reduction_handle(8, h_tmax, "real(kind=8)", "tmax")
 
 !------------------------------------OPS Stencil-------------------------------------------------------------
 
@@ -1781,7 +1791,6 @@ SUBROUTINE ops_data_init()
 
 #ifdef OPS_WITH_CUDAFOR
 
-
     ncofmx_opsconstant = ncofmx
     ntinmx_opsconstant = ntinmx
     nspcmx_opsconstant = nspcmx
@@ -1801,9 +1810,9 @@ SUBROUTINE ops_data_init()
     nrsmax_opsconstant = nrsmax
     nbcpri_opsconstant = nbcpri
     ncfrmx_opsconstant = ncfrmx
+    nl_opsconstant = nl
 
 #endif
-
 
     call ops_decl_const("ncofmx", 1, "integer(kind=4)", ncofmx)
     call ops_decl_const("ntinmx", 1, "integer(kind=4)", ntinmx)
@@ -1824,5 +1833,6 @@ SUBROUTINE ops_data_init()
     call ops_decl_const("nrsmax", 1, "integer(kind=4)", nrsmax)
     call ops_decl_const("nbcpri", 1, "integer(kind=4)", nbcpri)
     call ops_decl_const("ncfrmx", 1, "integer(kind=4)", ncfrmx)
+    call ops_decl_const("nl", 1, "integer(kind=4)", nl)
 
 END SUBROUTINE ops_data_init
