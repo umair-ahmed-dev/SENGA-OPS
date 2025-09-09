@@ -83,7 +83,7 @@ Navigate back to the SENGA directory and buikd the source code with the target b
 ```bash
 cd SENGA-OPS/src
 ./Allmake
- make -f Makefile.codegen senga2_<target>
+ make -f Makefile.codegen senga2 TARGET=<target>
 ```
 
 Which ```<target>``` can have different options which explained in previouse section.
